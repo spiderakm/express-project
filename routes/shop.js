@@ -1,10 +1,12 @@
-const express = require('express')
-
+const express = require('express');
+const { dirname } = require('path');
+const path = require('path');
+const pathDir = require('../utlis/path')
 const router = express.Router()
 
 
 router.get('/',(req,res,next) => {
-    res.send("<h1> hello ashok   </h1>")
+    res.sendFile(path.join(pathDir,'views','shop.html'))
 })
 
 
