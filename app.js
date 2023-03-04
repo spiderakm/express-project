@@ -16,6 +16,10 @@ app.set('views', 'views');
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const { use } = require('./routes/admin');
+const Cart = require('./models/cart');
+const cartItem = require('./models/cart-item');
+const Product = require('./models/product');
+const CartItem = require('./models/cart-item');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -36,10 +40,13 @@ app.use(errorController.get404);
 
 product.belongsTo(User,{ constraints:true,onDelete:'CASCADE'})
 User.hasMany(product)
-
-
+User.hasOne(Cart);
+Cart.belongsTo(user)
+Cart.belongsToMany(Product,{ through : CartItem })
+Product.belongsToMany(Cart,{ through : CartItem});
 
 sequelize
+  // .sync({ force: true })
   .sync()
   .then(result => {
     return User.findById(1);
@@ -54,6 +61,10 @@ sequelize
   })
   .then(user => {
     console.log(user)
+    return user.cartCart()
+    
+
+  }).then(cart => {
     app.listen(3000);
   })
   .catch(err => {
